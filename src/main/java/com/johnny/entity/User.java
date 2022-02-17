@@ -4,6 +4,7 @@
  */
 package com.johnny.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,6 +82,7 @@ public class User {
     @PrePersist
     protected void onCreate() {
         createdAt = new Date();
+        updatedat = new Date();
     }
 
     @PreUpdate
