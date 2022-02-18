@@ -32,7 +32,7 @@ public class HibernateUtils {
                 if (registry != null) {
                     StandardServiceRegistryBuilder.destroy(registry);
                 }
-                JOptionPane.showMessageDialog(null, "Failed To Connect Database");
+                JOptionPane.showMessageDialog(null, "Failed To Connect Database "+e.getMessage());
             }
         }
         return sessionFactory;

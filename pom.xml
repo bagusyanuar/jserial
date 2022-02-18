@@ -7,6 +7,13 @@
     <version>1.0</version>
     <name>jserial</name>
     <url>http://maven.apache.org</url>
+    <repositories>
+        <repository>
+            <id>unknown-jars-temp-repo</id>
+            <name>A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository.</name>
+            <url>file:${project.basedir}/lib</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -38,7 +45,5 @@
             <artifactId>bcrypt</artifactId>
             <version>0.2.0</version>
         </dependency>
-
-
     </dependencies>
 </project>
