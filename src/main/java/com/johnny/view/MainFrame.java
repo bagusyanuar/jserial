@@ -5,6 +5,7 @@
 package com.johnny.view;
 
 import com.johnny.util.SingleDisplayInterface;
+import com.johnny.view.master.SupplierFrame;
 import com.johnny.view.master.UserFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -20,6 +21,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
     
     UserFrame userFrame;
+    SupplierFrame supplierFrame;
     SingleDisplayInterface sdi = new SingleDisplayInterface();
     public MainFrame() {
         initComponents();
@@ -41,8 +43,10 @@ public class MainFrame extends javax.swing.JFrame {
     public void prepareComponent(Session session){
         try {
             userFrame = new UserFrame();
+            supplierFrame = new SupplierFrame();
             userFrame.setSession(session);
-            JInternalFrame[] iframe = {userFrame};
+            supplierFrame.setSession(session);
+            JInternalFrame[] iframe = {userFrame, supplierFrame};
             sdi.prepareComponent(iframe, dPane);
             
         } catch (Exception e) {
@@ -66,6 +70,7 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -105,6 +110,14 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jMenu2.add(jMenuItem1);
 
+        jMenuItem2.setText("Supplier");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem2);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -138,6 +151,13 @@ public class MainFrame extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
     }//GEN-LAST:event_formWindowOpened
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        sdi.setMaximizeView(false);
+        sdi.setCenterLocation(supplierFrame, dPane);
+        sdi.showCompt(supplierFrame, dPane);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -180,5 +200,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     // End of variables declaration//GEN-END:variables
 }

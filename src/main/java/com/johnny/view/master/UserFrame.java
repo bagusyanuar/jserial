@@ -78,6 +78,9 @@ public class UserFrame extends javax.swing.JInternalFrame {
         tb_data = new javax.swing.JTable();
         jComboBox1 = new javax.swing.JComboBox();
 
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+
         jLabel1.setText("Username :");
 
         jLabel2.setText("Password :");

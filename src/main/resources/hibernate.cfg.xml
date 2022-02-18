@@ -14,5 +14,6 @@
         <property name="connection.autocommit">true</property>
         <!--<property name="current_session_context_class">thread</property>-->
         <mapping class="com.johnny.entity.User" />
+        <mapping class="com.johnny.entity.Supplier" />
     </session-factory>
 </hibernate-configuration>
