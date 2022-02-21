@@ -7,6 +7,7 @@ import com.johnny.view.MainFrame;
 import java.awt.Frame;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 /**
  * Hello world!
@@ -23,10 +24,11 @@ public class App {
 //            user.setUsername("bagus");
 //            user.setPassword(hash);
 //            session.save(user);
-            Session session = HibernateUtils.getSessionFactory().openSession();
+//            Session session = HibernateUtils.getSessionFactory().openSession();
+            SessionFactory fs = HibernateUtils.getSessionFactory();
             MainFrame m = new MainFrame();
 //            m.setSession(session);
-            m.prepareComponent(session);
+            m.prepareComponent(fs);
             m.setExtendedState(Frame.MAXIMIZED_BOTH);
             m.setVisible(true);
         } catch (Exception e) {

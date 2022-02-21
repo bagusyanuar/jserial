@@ -10,6 +10,7 @@ import com.johnny.view.master.UserFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 /**
  *
  * @author johnny
@@ -40,12 +41,26 @@ public class MainFrame extends javax.swing.JFrame {
 //    }
     
     
-    public void prepareComponent(Session session){
+//    public void prepareComponent(Session session){
+//        try {
+//            userFrame = new UserFrame();
+//            supplierFrame = new SupplierFrame();
+//            userFrame.setSession(session);
+//            supplierFrame.setSession(session);
+//            JInternalFrame[] iframe = {userFrame, supplierFrame};
+//            sdi.prepareComponent(iframe, dPane);
+//            
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, "error prepare "+e.getMessage());
+//        }
+//    }
+    
+    public void prepareComponent(SessionFactory session){
         try {
             userFrame = new UserFrame();
             supplierFrame = new SupplierFrame();
-            userFrame.setSession(session);
-            supplierFrame.setSession(session);
+            userFrame.setFactory(session);
+            supplierFrame.setFactory(session);
             JInternalFrame[] iframe = {userFrame, supplierFrame};
             sdi.prepareComponent(iframe, dPane);
             

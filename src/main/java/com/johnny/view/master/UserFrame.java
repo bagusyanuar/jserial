@@ -7,8 +7,10 @@ package com.johnny.view.master;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.johnny.entity.User;
 import com.johnny.util.HibernateUtils;
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 /**
  *
@@ -33,28 +35,63 @@ public class UserFrame extends javax.swing.JInternalFrame {
     public void setSession(Session session) {
         this.session = session;
     }
+    
+    private SessionFactory factory;
 
+    public SessionFactory getFactory() {
+        return factory;
+    }
+
+    public void setFactory(SessionFactory factory) {
+        this.factory = factory;
+    }
+
+//    private void createUser() {
+//        try {
+//            if (session != null) {
+//                String username = txt_username.getText();
+//                String plain_password = txt_password.getText();
+//                String password = BCrypt.withDefaults().hashToString(13, plain_password.toCharArray());
+//                User user = new User();
+//                user.setUsername(username);
+//                user.setPassword(password);
+//                session.save(user);
+//                System.out.println(user.getUsername()+" "+user.getPassword());
+//                System.out.println(session);
+//                
+//                JOptionPane.showMessageDialog(null, "Success create new user");
+//            }else {
+//                JOptionPane.showMessageDialog(null, "Error Null Session");
+//            }
+//
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, "error insert " + e.getMessage());
+//        } 
+//    }
+    
     private void createUser() {
+        Session ses = factory.openSession();
         try {
-            if (session != null) {
+            if (factory != null) {
+                
                 String username = txt_username.getText();
                 String plain_password = txt_password.getText();
                 String password = BCrypt.withDefaults().hashToString(13, plain_password.toCharArray());
                 User user = new User();
                 user.setUsername(username);
                 user.setPassword(password);
-                session.save(user);
+                ses.save(user);
                 System.out.println(user.getUsername()+" "+user.getPassword());
-                System.out.println(session);
-                
                 JOptionPane.showMessageDialog(null, "Success create new user");
             }else {
                 JOptionPane.showMessageDialog(null, "Error Null Session");
             }
 
-        } catch (Exception e) {
+        } catch (HeadlessException e) {
             JOptionPane.showMessageDialog(null, "error insert " + e.getMessage());
-        } 
+        } finally {
+            ses.close();
+        }
     }
 
     /**

@@ -7,8 +7,10 @@ package com.johnny.view.master;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.johnny.entity.Supplier;
 import com.johnny.entity.User;
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 /**
  *
@@ -32,26 +34,59 @@ public class SupplierFrame extends javax.swing.JInternalFrame {
     public void setSession(Session session) {
         this.session = session;
     }
-    
+
+    private SessionFactory factory;
+
+    public SessionFactory getFactory() {
+        return factory;
+    }
+
+    public void setFactory(SessionFactory factory) {
+        this.factory = factory;
+    }
+
+//    private void createSupplier() {
+//        try {
+//            if (session != null) {
+//                String name = txt_name.getText();
+//                Supplier supplier = new Supplier();
+//                supplier.setName(name);
+//                
+//                session.save(supplier);
+//                System.out.println(session);
+//                
+//                JOptionPane.showMessageDialog(null, "Success create new Supplier");
+//            }else {
+//                JOptionPane.showMessageDialog(null, "Error Null Session");
+//            }
+//
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, "error insert " + e.getMessage());
+//        } 
+//    }
     private void createSupplier() {
+        Session ses = factory.openSession();
         try {
-            if (session != null) {
+            if (ses != null) {
                 String name = txt_name.getText();
                 Supplier supplier = new Supplier();
                 supplier.setName(name);
-                
-                session.save(supplier);
-                System.out.println(session);
-                
+
+                ses.save(supplier);
+//                System.out.println(session);
+
                 JOptionPane.showMessageDialog(null, "Success create new Supplier");
-            }else {
+            } else {
                 JOptionPane.showMessageDialog(null, "Error Null Session");
             }
 
-        } catch (Exception e) {
+        } catch (HeadlessException e) {
             JOptionPane.showMessageDialog(null, "error insert " + e.getMessage());
-        } 
+        } finally {
+            ses.close();
+        }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
