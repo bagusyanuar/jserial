@@ -6,6 +6,8 @@ import com.johnny.util.HibernateUtils;
 import com.johnny.view.MainFrame;
 import java.awt.Frame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -16,22 +18,22 @@ import org.hibernate.SessionFactory;
 public class App {
 
     public static void main(String[] args) {
-//        System.out.println("Hello World!");
-//        String password = "bgst";
-//        String hash = BCrypt.withDefaults().hashToString(13, password.toCharArray());
         try {
-//            User user = new User();
-//            user.setUsername("bagus");
-//            user.setPassword(hash);
-//            session.save(user);
-//            Session session = HibernateUtils.getSessionFactory().openSession();
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             SessionFactory fs = HibernateUtils.getSessionFactory();
             MainFrame m = new MainFrame();
-//            m.setSession(session);
             m.prepareComponent(fs);
             m.setExtendedState(Frame.MAXIMIZED_BOTH);
             m.setVisible(true);
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        } catch (IllegalAccessException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+//        System.out.println(hash);
+        catch (InstantiationException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        } catch (UnsupportedLookAndFeelException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
 //        System.out.println(hash);

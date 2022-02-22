@@ -8,7 +8,10 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.johnny.entity.Supplier;
 import com.johnny.entity.User;
 import java.awt.HeadlessException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -45,36 +48,18 @@ public class SupplierFrame extends javax.swing.JInternalFrame {
         this.factory = factory;
     }
 
-//    private void createSupplier() {
-//        try {
-//            if (session != null) {
-//                String name = txt_name.getText();
-//                Supplier supplier = new Supplier();
-//                supplier.setName(name);
-//                
-//                session.save(supplier);
-//                System.out.println(session);
-//                
-//                JOptionPane.showMessageDialog(null, "Success create new Supplier");
-//            }else {
-//                JOptionPane.showMessageDialog(null, "Error Null Session");
-//            }
-//
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, "error insert " + e.getMessage());
-//        } 
-//    }
-    private void createSupplier() {
+    private void create() {
         Session ses = factory.openSession();
         try {
             if (ses != null) {
                 String name = txt_name.getText();
+                String phone = txt_phone.getText();
                 Supplier supplier = new Supplier();
                 supplier.setName(name);
-
+                supplier.setPhone(phone);
                 ses.save(supplier);
-//                System.out.println(session);
-
+                clear();
+                getData(ses);
                 JOptionPane.showMessageDialog(null, "Success create new Supplier");
             } else {
                 JOptionPane.showMessageDialog(null, "Error Null Session");
@@ -85,6 +70,38 @@ public class SupplierFrame extends javax.swing.JInternalFrame {
         } finally {
             ses.close();
         }
+    }
+    
+    private void getData(Session session) {
+        DefaultTableModel model = new DefaultTableModel();
+        tb_data.setModel(model);
+        model.addColumn("No.");
+        model.addColumn("Nama Supplier");
+        model.addColumn("No. Hp");
+        model.getDataVector().removeAllElements();
+        model.fireTableDataChanged();
+         try {
+
+            List<Supplier> data = new ArrayList<Supplier>();
+            data = session.createQuery("FROM Supplier").list();
+            int index = 0;
+            for (Supplier supplier : data) {
+                Object[] obj = new Object[3];
+                obj[0] = index + 1;
+                obj[1] = supplier.getName();
+                obj[2] = supplier.getPhone();
+                model.addRow(obj);
+                index++;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            System.err.println(e.getMessage());
+        }
+    }
+    
+    private void clear() {
+        txt_name.setText("");
+        txt_phone.setText("");
     }
 
     /**
@@ -100,11 +117,21 @@ public class SupplierFrame extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         txt_name = new javax.swing.JTextField();
         btn_save = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        txt_phone = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tb_data = new javax.swing.JTable();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setTitle("Form Data Supplier");
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
 
-        jLabel1.setText("Username :");
+        jLabel1.setText("Nama Supplier :");
 
         btn_save.setText("Simpan");
         btn_save.addActionListener(new java.awt.event.ActionListener() {
@@ -113,21 +140,41 @@ public class SupplierFrame extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel2.setText("No. Hp :");
+
+        tb_data.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tb_data.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jScrollPane1.setViewportView(tb_data);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_name)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
-                        .addComponent(btn_save)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(114, 114, 114))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btn_save)
+                            .addComponent(txt_name, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                            .addComponent(txt_phone))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -136,20 +183,28 @@ public class SupplierFrame extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txt_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(82, 82, 82)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(txt_phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
                 .addComponent(btn_save)
-                .addContainerGap(132, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -157,14 +212,26 @@ public class SupplierFrame extends javax.swing.JInternalFrame {
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
         // TODO add your handling code here:
-        createSupplier();
+        create();
     }//GEN-LAST:event_btn_saveActionPerformed
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        // TODO add your handling code here:
+        clear();
+        Session ses = factory.openSession();
+        getData(ses);
+        ses.close();
+    }//GEN-LAST:event_formComponentShown
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_save;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tb_data;
     private javax.swing.JTextField txt_name;
+    private javax.swing.JTextField txt_phone;
     // End of variables declaration//GEN-END:variables
 }

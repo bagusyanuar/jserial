@@ -29,38 +29,12 @@ public class MainFrame extends javax.swing.JFrame {
         
     }
     
-
-//    private Session session;
-//
-//    public Session getSession() {
-//        return session;
-//    }
-//
-//    public void setSession(Session session) {
-//        this.session = session;
-//    }
-    
-    
-//    public void prepareComponent(Session session){
-//        try {
-//            userFrame = new UserFrame();
-//            supplierFrame = new SupplierFrame();
-//            userFrame.setSession(session);
-//            supplierFrame.setSession(session);
-//            JInternalFrame[] iframe = {userFrame, supplierFrame};
-//            sdi.prepareComponent(iframe, dPane);
-//            
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, "error prepare "+e.getMessage());
-//        }
-//    }
-    
-    public void prepareComponent(SessionFactory session){
+    public void prepareComponent(SessionFactory factory){
         try {
             userFrame = new UserFrame();
             supplierFrame = new SupplierFrame();
-            userFrame.setFactory(session);
-            supplierFrame.setFactory(session);
+            userFrame.setFactory(factory);
+            supplierFrame.setFactory(factory);
             JInternalFrame[] iframe = {userFrame, supplierFrame};
             sdi.prepareComponent(iframe, dPane);
             

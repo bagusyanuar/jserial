@@ -8,7 +8,10 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.johnny.entity.User;
 import com.johnny.util.HibernateUtils;
 import java.awt.HeadlessException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -23,7 +26,7 @@ public class UserFrame extends javax.swing.JInternalFrame {
      */
     public UserFrame() {
         initComponents();
-        jComboBox1.addItem("Oke");
+        clear();
     }
 
     private Session session;
@@ -35,7 +38,7 @@ public class UserFrame extends javax.swing.JInternalFrame {
     public void setSession(Session session) {
         this.session = session;
     }
-    
+
     private SessionFactory factory;
 
     public SessionFactory getFactory() {
@@ -46,34 +49,11 @@ public class UserFrame extends javax.swing.JInternalFrame {
         this.factory = factory;
     }
 
-//    private void createUser() {
-//        try {
-//            if (session != null) {
-//                String username = txt_username.getText();
-//                String plain_password = txt_password.getText();
-//                String password = BCrypt.withDefaults().hashToString(13, plain_password.toCharArray());
-//                User user = new User();
-//                user.setUsername(username);
-//                user.setPassword(password);
-//                session.save(user);
-//                System.out.println(user.getUsername()+" "+user.getPassword());
-//                System.out.println(session);
-//                
-//                JOptionPane.showMessageDialog(null, "Success create new user");
-//            }else {
-//                JOptionPane.showMessageDialog(null, "Error Null Session");
-//            }
-//
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, "error insert " + e.getMessage());
-//        } 
-//    }
-    
-    private void createUser() {
+    private void create() {
         Session ses = factory.openSession();
         try {
             if (factory != null) {
-                
+
                 String username = txt_username.getText();
                 String plain_password = txt_password.getText();
                 String password = BCrypt.withDefaults().hashToString(13, plain_password.toCharArray());
@@ -81,17 +61,48 @@ public class UserFrame extends javax.swing.JInternalFrame {
                 user.setUsername(username);
                 user.setPassword(password);
                 ses.save(user);
-                System.out.println(user.getUsername()+" "+user.getPassword());
+                clear();
+                getData(ses);
                 JOptionPane.showMessageDialog(null, "Success create new user");
-            }else {
+            } else {
                 JOptionPane.showMessageDialog(null, "Error Null Session");
             }
-
         } catch (HeadlessException e) {
             JOptionPane.showMessageDialog(null, "error insert " + e.getMessage());
         } finally {
             ses.close();
         }
+        
+    }
+
+    private void getData(Session ses) {
+        DefaultTableModel model = new DefaultTableModel();
+        tb_data.setModel(model);
+        model.addColumn("No.");
+        model.addColumn("username");
+        model.getDataVector().removeAllElements();
+        model.fireTableDataChanged();
+        try {
+
+            List<User> data = new ArrayList<User>();
+            data = ses.createQuery("FROM User").list();
+            int index = 0;
+            for (User user : data) {
+                Object[] obj = new Object[2];
+                obj[0] = index + 1;
+                obj[1] = user.getUsername();
+                model.addRow(obj);
+                index++;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private void clear() {
+        txt_username.setText("");
+        txt_password.setText("");
     }
 
     /**
@@ -108,21 +119,22 @@ public class UserFrame extends javax.swing.JInternalFrame {
         txt_username = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txt_password = new javax.swing.JPasswordField();
-        jLabel3 = new javax.swing.JLabel();
         btn_reset = new javax.swing.JButton();
         btn_save = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tb_data = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
 
         jLabel1.setText("Username :");
 
         jLabel2.setText("Password :");
-
-        jLabel3.setText("Role :");
 
         btn_reset.setText("Reset");
 
@@ -135,18 +147,17 @@ public class UserFrame extends javax.swing.JInternalFrame {
 
         tb_data.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "No.", "Username"
             }
         ));
+        tb_data.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(tb_data);
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -157,27 +168,22 @@ public class UserFrame extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txt_password, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
-                                    .addComponent(txt_username))
-                                .addGap(409, 409, 409))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(btn_reset)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btn_save))
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())))
+                                .addComponent(btn_reset)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_save)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txt_password, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                                    .addComponent(txt_username, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGap(372, 372, 372))))
+                    .addComponent(jScrollPane1))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -190,17 +196,13 @@ public class UserFrame extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txt_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(36, 36, 36)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_reset)
                     .addComponent(btn_save))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -219,17 +221,23 @@ public class UserFrame extends javax.swing.JInternalFrame {
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
         // TODO add your handling code here:
-        createUser();
+        create();
     }//GEN-LAST:event_btn_saveActionPerformed
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        // TODO add your handling code here:
+        clear();
+        Session ses = factory.openSession();
+        getData(ses);
+        ses.close();
+    }//GEN-LAST:event_formComponentShown
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_reset;
     private javax.swing.JButton btn_save;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tb_data;

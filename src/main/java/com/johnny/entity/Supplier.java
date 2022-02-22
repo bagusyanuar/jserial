@@ -29,6 +29,9 @@ public class Supplier implements Serializable {
 
     @Column(name = "name")
     private String name;
+    
+    @Column(name = "phone")
+    private String phone;
 
     @Column(name = "created_at")
     private Date createdAt;
@@ -50,6 +53,14 @@ public class Supplier implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     
