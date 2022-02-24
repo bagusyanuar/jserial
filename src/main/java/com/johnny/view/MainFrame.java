@@ -5,6 +5,7 @@
 package com.johnny.view;
 
 import com.johnny.util.SingleDisplayInterface;
+import com.johnny.view.master.ReceiptFrame;
 import com.johnny.view.master.SupplierFrame;
 import com.johnny.view.master.UserFrame;
 import javax.swing.JInternalFrame;
@@ -23,6 +24,7 @@ public class MainFrame extends javax.swing.JFrame {
     
     UserFrame userFrame;
     SupplierFrame supplierFrame;
+    ReceiptFrame receiptFrame;
     SingleDisplayInterface sdi = new SingleDisplayInterface();
     public MainFrame() {
         initComponents();
@@ -33,9 +35,11 @@ public class MainFrame extends javax.swing.JFrame {
         try {
             userFrame = new UserFrame();
             supplierFrame = new SupplierFrame();
+            receiptFrame = new ReceiptFrame();
             userFrame.setFactory(factory);
             supplierFrame.setFactory(factory);
-            JInternalFrame[] iframe = {userFrame, supplierFrame};
+            receiptFrame.setFactory(factory);
+            JInternalFrame[] iframe = {userFrame, supplierFrame, receiptFrame};
             sdi.prepareComponent(iframe, dPane);
             
         } catch (Exception e) {
@@ -60,6 +64,8 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -109,6 +115,18 @@ public class MainFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
+        jMenu3.setText("Transaksi");
+
+        jMenuItem3.setText("Penerimaan");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu3);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -147,6 +165,13 @@ public class MainFrame extends javax.swing.JFrame {
         sdi.setCenterLocation(supplierFrame, dPane);
         sdi.showCompt(supplierFrame, dPane);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+        sdi.setMaximizeView(false);
+        sdi.setCenterLocation(receiptFrame, dPane);
+        sdi.showCompt(receiptFrame, dPane);
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -187,8 +212,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JDesktopPane dPane;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     // End of variables declaration//GEN-END:variables
 }
