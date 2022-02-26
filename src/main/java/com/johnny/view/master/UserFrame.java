@@ -5,13 +5,26 @@
 package com.johnny.view.master;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.johnny.entity.Receipt;
 import com.johnny.entity.User;
 import com.johnny.util.HibernateUtils;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.view.JasperViewer;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -105,6 +118,39 @@ public class UserFrame extends javax.swing.JInternalFrame {
         txt_password.setText("");
     }
 
+    
+    public List<Map<String, ?>> findAll() {
+        List<Map<String, ?>> result = new ArrayList<Map<String, ?>>();
+        Session ses = factory.openSession();
+        try {
+            List<Receipt> data = new ArrayList<Receipt>();
+            data = ses.createQuery("FROM Receipt r WHERE r.supplier.id = 2").list();
+            for (Receipt receipt : data) {
+                Map<String, Object> m = new HashMap<String, Object>();
+                m.put("id", receipt.getId());
+                m.put("driver", receipt.getDriver());
+                m.put("supplier", receipt.getSupplier());
+                result.add(m);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        } finally {
+            ses.close();
+        }
+        return result;
+    }
+    
+    private void cetak() {
+        try {
+            JRBeanCollectionDataSource jrDataSource = new JRBeanCollectionDataSource(findAll());
+            String source = "src/main/java/com/johnny/report/report2.jrxml";
+            JasperReport report = JasperCompileManager.compileReport(source);
+            JasperPrint filledReport = JasperFillManager.fillReport(report, null, jrDataSource);
+            JasperViewer.viewReport(filledReport, false);
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -137,6 +183,11 @@ public class UserFrame extends javax.swing.JInternalFrame {
         jLabel2.setText("Password :");
 
         btn_reset.setText("Reset");
+        btn_reset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_resetActionPerformed(evt);
+            }
+        });
 
         btn_save.setText("Simpan");
         btn_save.addActionListener(new java.awt.event.ActionListener() {
@@ -231,6 +282,11 @@ public class UserFrame extends javax.swing.JInternalFrame {
         getData(ses);
         ses.close();
     }//GEN-LAST:event_formComponentShown
+
+    private void btn_resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_resetActionPerformed
+        // TODO add your handling code here:
+        cetak();
+    }//GEN-LAST:event_btn_resetActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
