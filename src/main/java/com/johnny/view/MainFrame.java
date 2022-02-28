@@ -43,7 +43,7 @@ public class MainFrame extends javax.swing.JFrame {
             sdi.prepareComponent(iframe, dPane);
             
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "error prepare "+e.getMessage());
+            JOptionPane.showMessageDialog(null, "error prepare component "+e);
         }
     }
     

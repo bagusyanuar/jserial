@@ -26,15 +26,14 @@ public class App {
             m.setExtendedState(Frame.MAXIMIZED_BOTH);
             m.setVisible(true);
         } catch (ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, "error class not found " + e.getMessage());
         } catch (IllegalAccessException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-//        System.out.println(hash);
+            JOptionPane.showMessageDialog(null, "error Illegal " + e.getMessage());
+        } //        System.out.println(hash);
         catch (InstantiationException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, "instantion " + e.getMessage());
         } catch (UnsupportedLookAndFeelException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null, "look and feel" + e.getMessage());
         }
 //        System.out.println(hash);
 
