@@ -22,5 +22,19 @@ public class UserRepository {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
         return user;
-    } 
+    }    
+    
+    public static User findByUsername(Session session, String username) {
+        User user = null;
+        try {
+            user = (User) session.createQuery("FROM User WHERE username = '" + username + "'")
+                    .getResultList()
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        return user;
+    }
 }

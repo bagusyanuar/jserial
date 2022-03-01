@@ -32,6 +32,9 @@ public class User implements Serializable {
 
     @Column(name = "password", columnDefinition = "TEXT")
     private String password;
+    
+    @Column(name = "role")
+    private String role;
 
     @Column(name = "created_at")
     private Date createdAt;
@@ -63,6 +66,15 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    
     public Date getCreatedAt() {
         return createdAt;
     }

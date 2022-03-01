@@ -73,6 +73,7 @@ public class UserFrame extends javax.swing.JInternalFrame {
                 User user = new User();
                 user.setUsername(username);
                 user.setPassword(password);
+                user.setRole("admin");
                 ses.save(user);
                 clear();
                 getData(ses);

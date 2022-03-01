@@ -4,6 +4,7 @@
  */
 package com.johnny.view;
 
+import com.johnny.dialog.Login;
 import com.johnny.util.SingleDisplayInterface;
 import com.johnny.view.master.ReceiptFrame;
 import com.johnny.view.master.SupplierFrame;
@@ -12,6 +13,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
 /**
  *
  * @author johnny
@@ -21,33 +23,101 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainFrame
      */
-    
     UserFrame userFrame;
     SupplierFrame supplierFrame;
     ReceiptFrame receiptFrame;
     SingleDisplayInterface sdi = new SingleDisplayInterface();
+    String operator;
+    long operatorId;
+    SessionFactory sf;
+
     public MainFrame() {
         initComponents();
-        
     }
-    
-    public void prepareComponent(SessionFactory factory){
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    public long getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(long operatorId) {
+        this.operatorId = operatorId;
+    }
+
+    public SessionFactory getSf() {
+        return sf;
+    }
+
+    public void setSf(SessionFactory sf) {
+        this.sf = sf;
+    }
+
+    public boolean prepareComponent(SessionFactory factory) {
+        boolean result = false;
         try {
+            setSf(factory);
             userFrame = new UserFrame();
             supplierFrame = new SupplierFrame();
             receiptFrame = new ReceiptFrame();
             userFrame.setFactory(factory);
             supplierFrame.setFactory(factory);
             receiptFrame.setFactory(factory);
+            receiptFrame.setMf(this);
             JInternalFrame[] iframe = {userFrame, supplierFrame, receiptFrame};
             sdi.prepareComponent(iframe, dPane);
-            
+            result = true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "error prepare component "+e);
+            JOptionPane.showMessageDialog(null, "error prepare component " + e);
+        }
+        return result;
+    }
+
+    public void postLogin(long operatorId, String operator, String role) {
+        lbl_operator.setText(operator);
+        setOperatorId(operatorId);
+        setOperator(operator);
+        setAccessMenu(role);
+    }
+
+    public void postLogout() {
+        lbl_operator.setText("-");
+        setOperatorId(0);
+        setOperator("-");
+    }
+
+    private void setAccessMenu(String role) {
+        menuLogin.setEnabled(false);
+        menuLogout.setEnabled(true);
+        switch (role) {
+            case "super":
+                menuUser.setEnabled(true);
+                menuReceipt.setEnabled(true);
+                menuSupplier.setEnabled(true);
+                break;
+            case "admin":
+                menuUser.setEnabled(false);
+                menuReceipt.setEnabled(true);
+                menuSupplier.setEnabled(true);
+                break;
+            default:
+                break;
         }
     }
-    
-    
+
+    private void setAccessLogout() {
+        menuLogin.setEnabled(true);
+        menuLogout.setEnabled(false);
+        menuUser.setEnabled(false);
+        menuReceipt.setEnabled(false);
+        menuSupplier.setEnabled(false);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -59,13 +129,22 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         dPane = new javax.swing.JDesktopPane();
+        jPanel1 = new javax.swing.JPanel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel1 = new javax.swing.JLabel();
+        lbl_operator = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        menuLogin = new javax.swing.JMenuItem();
+        menuLogout = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        menuUser = new javax.swing.JMenuItem();
+        menuSupplier = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        menuReceipt = new javax.swing.JMenuItem();
+        jMenu4 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -76,56 +155,116 @@ public class MainFrame extends javax.swing.JFrame {
 
         dPane.setBackground(new java.awt.Color(255, 255, 255));
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        jLabel1.setText("Operator :");
+
+        lbl_operator.setText("-");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_operator, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(486, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator1)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+            .addComponent(lbl_operator, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        dPane.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
         javax.swing.GroupLayout dPaneLayout = new javax.swing.GroupLayout(dPane);
         dPane.setLayout(dPaneLayout);
         dPaneLayout.setHorizontalGroup(
             dPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 755, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         dPaneLayout.setVerticalGroup(
             dPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 304, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dPaneLayout.createSequentialGroup()
+                .addGap(0, 274, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jMenu1.setText("System");
+
+        menuLogin.setText("Login");
+        menuLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuLoginActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuLogin);
+
+        menuLogout.setText("Keluar");
+        menuLogout.setEnabled(false);
+        jMenu1.add(menuLogout);
+        jMenu1.add(jSeparator2);
+
+        jMenuItem5.setText("Tutup Aplikasi");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem5);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Master");
 
-        jMenuItem1.setText("User");
-        jMenuItem1.addMouseListener(new java.awt.event.MouseAdapter() {
+        menuUser.setText("User");
+        menuUser.setEnabled(false);
+        menuUser.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenuItem1MouseClicked(evt);
+                menuUserMouseClicked(evt);
             }
         });
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        menuUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                menuUserActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem1);
+        jMenu2.add(menuUser);
 
-        jMenuItem2.setText("Supplier");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        menuSupplier.setText("Supplier");
+        menuSupplier.setEnabled(false);
+        menuSupplier.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                menuSupplierActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem2);
+        jMenu2.add(menuSupplier);
 
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Transaksi");
 
-        jMenuItem3.setText("Penerimaan");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        menuReceipt.setText("Penerimaan");
+        menuReceipt.setEnabled(false);
+        menuReceipt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                menuReceiptActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem3);
+        jMenu3.add(menuReceipt);
 
         jMenuBar1.add(jMenu3);
+
+        jMenu4.setText("Setting");
+        jMenuBar1.add(jMenu4);
 
         setJMenuBar(jMenuBar1);
 
@@ -143,35 +282,50 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem1MouseClicked
+    private void menuUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuUserMouseClicked
         // TODO add your handling code here:
-        
-    }//GEN-LAST:event_jMenuItem1MouseClicked
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_menuUserMouseClicked
+
+    private void menuUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuUserActionPerformed
         // TODO add your handling code here:
         sdi.setMaximizeView(false);
         sdi.setCenterLocation(userFrame, dPane);
         sdi.showCompt(userFrame, dPane);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_menuUserActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
+//        menuUser.setEnabled(true);
     }//GEN-LAST:event_formWindowOpened
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void menuSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSupplierActionPerformed
         // TODO add your handling code here:
         sdi.setMaximizeView(false);
         sdi.setCenterLocation(supplierFrame, dPane);
         sdi.showCompt(supplierFrame, dPane);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    }//GEN-LAST:event_menuSupplierActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+    private void menuReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReceiptActionPerformed
         // TODO add your handling code here:
         sdi.setMaximizeView(false);
         sdi.setCenterLocation(receiptFrame, dPane);
         sdi.showCompt(receiptFrame, dPane);
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    }//GEN-LAST:event_menuReceiptActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void menuLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoginActionPerformed
+        // TODO add your handling code here:
+        Login login = new Login(this, true);
+        login.setFactory(sf);
+        login.setMainFrame(this);
+        login.setLocationRelativeTo(null);
+        login.setVisible(true);
+    }//GEN-LAST:event_menuLoginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -210,12 +364,21 @@ public class MainFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane dPane;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JLabel lbl_operator;
+    private javax.swing.JMenuItem menuLogin;
+    private javax.swing.JMenuItem menuLogout;
+    private javax.swing.JMenuItem menuReceipt;
+    private javax.swing.JMenuItem menuSupplier;
+    private javax.swing.JMenuItem menuUser;
     // End of variables declaration//GEN-END:variables
 }

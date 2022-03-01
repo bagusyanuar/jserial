@@ -210,7 +210,7 @@ public class Supplier extends javax.swing.JDialog {
         if (evt.getClickCount() == 2) {
                int row = tb_data.getSelectedRow();
                String name = tb_data.getModel().getValueAt(row, 1).toString();
-               int id = Integer.parseInt(tb_data.getModel().getValueAt(row, 3).toString());
+               long id = Long.parseLong(tb_data.getModel().getValueAt(row, 3).toString());
                receiptFrame.setSupplierProperties(name, id);
                dispose();
         }
