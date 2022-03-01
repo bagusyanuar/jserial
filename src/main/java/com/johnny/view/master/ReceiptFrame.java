@@ -13,6 +13,7 @@ import java.awt.HeadlessException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
@@ -31,9 +32,25 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
     private SessionFactory factory;
     DefaultTableModel model;
     
+    String[] headerTitle = {"No.", "Nama Supplier", "No. Hp", "Supplier ID"};
+    int[] headerWidth = {40, 250, 120, 100};
+    int[] headerAlignment = {JLabel.CENTER, JLabel.LEFT, JLabel.CENTER, JLabel.CENTER};
+    
+    
     public ReceiptFrame() {
         initComponents();
-        model = new DefaultTableModel();
+        
+        Date date = new Date();
+        txt_tanggal.setDate(date);
+    }
+
+    private void setTabelProperties() {
+        model = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tb_data.setModel(model);
         model.addColumn("No.");
         model.addColumn("Tanggal Penerimaan");
@@ -44,10 +61,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
         model.addColumn("Operator");
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
-        Date date = new Date();
-        txt_tanggal.setDate(date);
     }
-
     
 
     public SessionFactory getFactory() {
@@ -118,6 +132,10 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
             System.err.println(e.getMessage());
         }
     }
+    
+    public void setSupplierProperties(String name, int id) {
+        txt_supplier_name.setText(name);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -141,6 +159,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
         tb_data = new javax.swing.JTable();
         txt_tanggal = new com.toedter.calendar.JDateChooser();
         jButton1 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -180,6 +199,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tb_data.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(tb_data);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Search 16.png"))); // NOI18N
@@ -190,6 +210,8 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel5.setText("Tanggal Penerimaan :");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -197,9 +219,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
-                        .addContainerGap())
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel4)
@@ -210,15 +230,17 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txt_save)
                             .addComponent(txt_driver_name, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                            .addComponent(txt_supplier_name)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(txt_qty, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                                .addComponent(txt_vehicle, javax.swing.GroupLayout.Alignment.LEADING))
-                            .addComponent(txt_supplier_name))
+                                .addComponent(txt_qty, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txt_vehicle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txt_tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32))))
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -228,13 +250,14 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
                         .addComponent(txt_supplier_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton1))
+                        .addComponent(jButton1)
+                        .addComponent(jLabel5))
                     .addComponent(txt_tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txt_driver_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txt_vehicle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -244,9 +267,9 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
                     .addComponent(txt_qty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txt_save)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -279,6 +302,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         com.johnny.dialog.Supplier d_supplier = new com.johnny.dialog.Supplier(null, true);
         d_supplier.setFactory(factory);
+        d_supplier.setReceiptFrame(this);
         d_supplier.setLocationRelativeTo(null);
         d_supplier.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -290,6 +314,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tb_data;

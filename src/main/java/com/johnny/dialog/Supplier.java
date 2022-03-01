@@ -4,9 +4,12 @@
  */
 package com.johnny.dialog;
 
+import com.johnny.view.master.ReceiptFrame;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,20 +25,42 @@ public class Supplier extends javax.swing.JDialog {
      */
     private SessionFactory factory;
     DefaultTableModel model;
+    ReceiptFrame receiptFrame;
+
+    String[] headerTitle = {"No.", "Nama Supplier", "No. Hp", "Supplier ID"};
+    int[] headerWidth = {40, 250, 120, 100};
+    int[] headerAlignment = {JLabel.CENTER, JLabel.LEFT, JLabel.CENTER, JLabel.CENTER};
 
     public Supplier(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        model = new DefaultTableModel();
+        model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;//To change body of generated methods, choose Tools | Templates.
+            }
+        };
         tb_data.setModel(model);
-        model.addColumn("No.");
-        model.addColumn("No.");
-        model.addColumn("Nama Supplier");
-        model.addColumn("No. Hp");
+        for (String headerTitle1 : headerTitle) {
+            model.addColumn(headerTitle1);
+        }
+
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
+        for (int i = 0; i < headerWidth.length; i++) {
+            tb_data.getColumnModel().getColumn(i).setPreferredWidth(headerWidth[i]);
+        }
+
+        for (int i = 0; i < headerAlignment.length; i++) {
+            DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+            cellRenderer.setHorizontalAlignment(headerAlignment[i]);
+            tb_data.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+        }
+        tb_data.getTableHeader().setReorderingAllowed(false);
     }
 
+    
+    
     public SessionFactory getFactory() {
         return factory;
     }
@@ -44,25 +69,29 @@ public class Supplier extends javax.swing.JDialog {
         this.factory = factory;
     }
 
+    public ReceiptFrame getReceiptFrame() {
+        return receiptFrame;
+    }
+
+    public void setReceiptFrame(ReceiptFrame receiptFrame) {
+        this.receiptFrame = receiptFrame;
+    }
+    
+
     private void getData(String param) {
         Session session = factory.openSession();
-        DefaultTableModel model = new DefaultTableModel();
-        tb_data.setModel(model);
-        model.addColumn("No.");
-        model.addColumn("Nama Supplier");
-        model.addColumn("No. Hp");
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
         try {
-
             List<com.johnny.entity.Supplier> data = new ArrayList<com.johnny.entity.Supplier>();
             data = session.createQuery("FROM Supplier WHERE name LIKE '%" + param + "%' ").list();
             int index = 0;
             for (com.johnny.entity.Supplier supplier : data) {
-                Object[] obj = new Object[3];
+                Object[] obj = new Object[4];
                 obj[0] = index + 1;
                 obj[1] = supplier.getName();
                 obj[2] = supplier.getPhone();
+                obj[3] = supplier.getId();
                 model.addRow(obj);
                 index++;
             }
@@ -115,6 +144,13 @@ public class Supplier extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tb_data.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tb_data.setRowHeight(25);
+        tb_data.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tb_dataMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tb_data);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -124,13 +160,11 @@ public class Supplier extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_name))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 5, Short.MAX_VALUE)))
+                        .addComponent(txt_name, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -141,8 +175,8 @@ public class Supplier extends javax.swing.JDialog {
                     .addComponent(jLabel1)
                     .addComponent(txt_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -170,6 +204,17 @@ public class Supplier extends javax.swing.JDialog {
         String param = txt_name.getText();
         getData(param);
     }//GEN-LAST:event_formWindowOpened
+
+    private void tb_dataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tb_dataMouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+               int row = tb_data.getSelectedRow();
+               String name = tb_data.getModel().getValueAt(row, 1).toString();
+               int id = Integer.parseInt(tb_data.getModel().getValueAt(row, 3).toString());
+               receiptFrame.setSupplierProperties(name, id);
+               dispose();
+        }
+    }//GEN-LAST:event_tb_dataMouseClicked
 
     /**
      * @param args the command line arguments
