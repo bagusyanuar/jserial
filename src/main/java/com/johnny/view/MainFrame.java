@@ -7,6 +7,7 @@ package com.johnny.view;
 import com.johnny.dialog.Login;
 import com.johnny.util.SingleDisplayInterface;
 import com.johnny.view.master.ReceiptFrame;
+import com.johnny.view.master.ReceiptReport;
 import com.johnny.view.master.SupplierFrame;
 import com.johnny.view.master.UserFrame;
 import javax.swing.JInternalFrame;
@@ -26,6 +27,7 @@ public class MainFrame extends javax.swing.JFrame {
     UserFrame userFrame;
     SupplierFrame supplierFrame;
     ReceiptFrame receiptFrame;
+    ReceiptReport receiptReport;
     SingleDisplayInterface sdi = new SingleDisplayInterface();
     String operator;
     long operatorId;
@@ -66,11 +68,14 @@ public class MainFrame extends javax.swing.JFrame {
             userFrame = new UserFrame();
             supplierFrame = new SupplierFrame();
             receiptFrame = new ReceiptFrame();
+            receiptReport = new ReceiptReport();
             userFrame.setFactory(factory);
             supplierFrame.setFactory(factory);
             receiptFrame.setFactory(factory);
+            receiptReport.setFactory(factory);
             receiptFrame.setMf(this);
-            JInternalFrame[] iframe = {userFrame, supplierFrame, receiptFrame};
+            receiptReport.setMf(this);
+            JInternalFrame[] iframe = {userFrame, supplierFrame, receiptFrame, receiptReport};
             sdi.prepareComponent(iframe, dPane);
             result = true;
         } catch (Exception e) {
@@ -90,6 +95,7 @@ public class MainFrame extends javax.swing.JFrame {
         lbl_operator.setText("-");
         setOperatorId(0);
         setOperator("-");
+        setAccessLogout();
     }
 
     private void setAccessMenu(String role) {
@@ -144,6 +150,8 @@ public class MainFrame extends javax.swing.JFrame {
         menuSupplier = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         menuReceipt = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -210,6 +218,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         menuLogout.setText("Keluar");
         menuLogout.setEnabled(false);
+        menuLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuLogoutActionPerformed(evt);
+            }
+        });
         jMenu1.add(menuLogout);
         jMenu1.add(jSeparator2);
 
@@ -262,6 +275,18 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu3.add(menuReceipt);
 
         jMenuBar1.add(jMenu3);
+
+        jMenu5.setText("Laporan");
+
+        jMenuItem1.setText("Penerimaan");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu5);
 
         jMenu4.setText("Setting");
         jMenuBar1.add(jMenu4);
@@ -327,6 +352,19 @@ public class MainFrame extends javax.swing.JFrame {
         login.setVisible(true);
     }//GEN-LAST:event_menuLoginActionPerformed
 
+    private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
+        // TODO add your handling code here:
+        sdi.hideCompt(dPane);
+        postLogout();
+    }//GEN-LAST:event_menuLogoutActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        sdi.setMaximizeView(false);
+        sdi.setCenterLocation(receiptReport, dPane);
+        sdi.showCompt(receiptReport, dPane);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -369,7 +407,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;

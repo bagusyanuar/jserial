@@ -18,11 +18,19 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -49,7 +57,6 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
         setTabelProperties();
         Date date = new Date();
         txt_tanggal.setDate(date);
-
     }
 
     public MainFrame getMf() {
@@ -151,7 +158,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
             data = session.createQuery("FROM Receipt WHERE date BETWEEN '" + start + "' AND '" + end + "'").list();
             int index = 0;
             for (Receipt receipt : data) {
-                Object[] obj = new Object[7];
+                Object[] obj = new Object[8];
                 obj[0] = index + 1;
                 obj[1] = df.format(receipt.getDate());
                 obj[2] = receipt.getSupplier().getName();
@@ -159,6 +166,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
                 obj[4] = receipt.getVehicle();
                 obj[5] = receipt.getQty();
                 obj[6] = receipt.getOperator().getUsername();
+                obj[7] = receipt.getId();
                 model.addRow(obj);
                 index++;
             }
@@ -190,6 +198,45 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
         txt_vehicle.setText("");
         txt_qty.setText("0");
     }
+
+    public List<Map<String, ?>> findAll(String id) {
+        List<Map<String, ?>> result = new ArrayList<Map<String, ?>>();
+        Session ses = factory.openSession();
+        try {
+            List<Receipt> data = new ArrayList<Receipt>();
+            data = ses.createQuery("FROM Receipt WHERE id = '" + id + "'").list();
+            for (Receipt receipt : data) {
+                Map<String, Object> m = new HashMap<String, Object>();
+                m.put("id", receipt.getId());
+                m.put("driver", receipt.getDriver());
+                m.put("supplier", receipt.getSupplier());
+                m.put("date", receipt.getDate());
+                m.put("vehicle", receipt.getVehicle());
+                m.put("qty", receipt.getQty());
+                result.add(m);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        } finally {
+            ses.close();
+        }
+        return result;
+    }
+
+    private void cetak(String id) {
+        try {
+            JRBeanCollectionDataSource jrDataSource = new JRBeanCollectionDataSource(findAll(id));
+            String source = "src/main/java/com/johnny/report/invoice.jrxml";
+            Map<String, Object> parameter = new HashMap<String, Object>();
+            parameter.put("operator", mf.getOperator());
+            JasperReport report = JasperCompileManager.compileReport(source);
+            JasperPrint filledReport = JasperFillManager.fillReport(report, parameter, jrDataSource);
+            JasperViewer.viewReport(filledReport, false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -219,6 +266,11 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
         jButton2 = new javax.swing.JButton();
 
         popCetak.setText("Cetak");
+        popCetak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                popCetakActionPerformed(evt);
+            }
+        });
         pop.add(popCetak);
 
         setClosable(true);
@@ -373,14 +425,15 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         if (isValidRequest()) {
             create();
-        }else {
+        } else {
             JOptionPane.showMessageDialog(null, "Harap Isi Semua Form...");
         }
-        
+
     }//GEN-LAST:event_txt_saveActionPerformed
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         // TODO add your handling code here:
+        
         Session ses = factory.openSession();
         getData(ses);
         ses.close();
@@ -411,6 +464,14 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
             pop.show(tb_data, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tb_dataMouseClicked
+
+    private void popCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popCetakActionPerformed
+        // TODO add your handling code here:
+            int row = tb_data.getSelectedRow();
+            String id = tb_data.getModel().getValueAt(row, 7).toString();
+            
+            cetak(id);
+    }//GEN-LAST:event_popCetakActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

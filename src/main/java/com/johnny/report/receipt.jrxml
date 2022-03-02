@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dd164563-c12b-46e1-a03b-9a10e3a0f1cd">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="start" class="java.util.Date"/>
+	<parameter name="end" class="java.util.Date"/>
+	<queryString language="hql">
+		<![CDATA[From Receipt]]>
+	</queryString>
+	<field name="createdAt" class="java.util.Date"/>
+	<field name="date" class="java.util.Date"/>
+	<field name="driver" class="java.lang.String"/>
+	<field name="id" class="java.lang.Long"/>
+	<field name="operator" class="com.johnny.entity.User"/>
+	<field name="qty" class="java.lang.Integer"/>
+	<field name="supplier" class="com.johnny.entity.Supplier"/>
+	<field name="updatedat" class="java.util.Date"/>
+	<field name="vehicle" class="java.lang.String"/>
+	<variable name="no" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{no}+1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="85" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="802" height="24" uuid="3665b933-035f-4afb-b13b-828dca4c46b3"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CV. CITA NASIONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="23" width="802" height="20" uuid="0e9119ef-62ac-432c-b206-49db00b53a40"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Pendingan, Sumogawe, Kec. Getasan, Kabupaten Semarang, Jawa Tengah 50774, (0298) 329448]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="43" width="802" height="20" uuid="2889fefa-077f-40b3-be3b-9fc2c2f22680"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Laporan Penerimaan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="277" y="63" width="44" height="16" uuid="ca8bb477-941c-459f-811f-4f1abba3d7c6"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Periode : ]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="321" y="63" width="69" height="16" uuid="6e883a3b-9c41-4f8b-9e0b-40009159ad0d"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{start}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="390" y="63" width="34" height="16" uuid="4df382d1-e422-490a-86c7-91d3158e554b"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Sampai]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="424" y="63" width="100" height="16" uuid="67d9847b-61b5-4d74-b0a9-acbd9598aea7"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{end}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="82" width="802" height="1" uuid="3d848862-5f3e-4656-b3b1-35e5ea0f6b05"/>
+			</line>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<rectangle>
+				<reportElement x="321" y="12" width="100" height="20" uuid="1dc76b35-2099-4d5d-8aa3-2dda915849b4"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="421" y="12" width="100" height="20" uuid="fa58eef4-d78f-47c7-8865-0a3484af8973"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="521" y="12" width="100" height="20" uuid="d2c75869-36db-41d1-a327-38d16e80e5d2"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="621" y="12" width="100" height="20" uuid="3f5ce2b5-e278-45bd-b47a-39dc8ba35efe"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="721" y="12" width="81" height="20" uuid="03195181-d670-484b-89f2-1d0eb1ee6194"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="129" y="12" width="192" height="20" uuid="07552595-3675-42ea-a11b-13bf847ea80e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="29" y="12" width="100" height="20" uuid="b866a6ee-dec0-4448-af72-a1f986e345cb"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="12" width="29" height="20" uuid="c68c8d17-b805-4119-80ba-211e0c176bee"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="12" width="29" height="20" uuid="96eab00d-a3b0-4f66-894f-81d16361a060"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="129" y="12" width="192" height="20" uuid="e24882ff-d3ea-45bd-98da-c9f749673955"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Supplier]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="29" y="12" width="100" height="20" uuid="fd835e5b-f44d-451f-8525-b3b55aa76c1b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Tanggal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="321" y="12" width="100" height="20" uuid="da1fad8e-337f-48d1-9fc0-0715a80e8067"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Driver]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="421" y="12" width="100" height="20" uuid="5a9df520-4a8e-4018-a4e6-f94425e79f27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[No. Kendaraan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="521" y="12" width="100" height="20" uuid="2dd4f200-2912-4a1e-8d0f-d6b27a164d4d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="621" y="12" width="100" height="20" uuid="db3af854-212a-4409-84e7-640aedbab4bc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Operator]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="721" y="12" width="81" height="20" uuid="9d703058-a643-4926-8990-568db3ef5a80"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Penerimaan ID]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="802" height="20" uuid="45277364-c424-470f-8811-2e7bafe616a7"/>
+			</rectangle>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="29" y="0" width="100" height="20" uuid="3ff5c10e-c348-4f07-92ee-ebf6e2c92602"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="0" width="192" height="20" uuid="6e92410a-b456-46db-81ef-340efaaba99f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{supplier}.getName()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="321" y="0" width="100" height="20" uuid="558676c0-a18e-4e30-ba65-3d9b6bc0462b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{driver}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="421" y="0" width="100" height="20" uuid="57fd9ec1-02b7-4b7d-834c-9763f4c85f70"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{vehicle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="521" y="0" width="100" height="20" uuid="bc690694-6d36-40b1-bf46-efaf20509950"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="621" y="0" width="100" height="20" uuid="0604acc8-f219-4b15-9902-ead58e5252ce"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{operator}.getUsername()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="721" y="0" width="81" height="20" uuid="adddf898-b562-44b8-b9a8-154de302ca49"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="29" height="20" uuid="3ec42e67-1ee5-4f92-aa10-585a79571f36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{no}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
