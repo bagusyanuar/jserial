@@ -391,7 +391,12 @@ public class MainFrame extends javax.swing.JFrame {
                     if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_RECEIVED) {
                         byte[] data = event.getReceivedData();
                         String msg = new String(data);
+                        int qty = 0;
+                        if (!"".equals(msg)) {
+                            qty = Integer.parseInt(msg);
+                        }
                         receiptFrame.setLabelQty(msg);
+                        receiptFrame.setQtyDevice(qty);
                         System.out.println(msg);
                     } //To change body of generated methods, choose Tools | Templates.
                 }
