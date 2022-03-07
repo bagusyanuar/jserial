@@ -85,20 +85,32 @@
             <Property name="text" type="java.lang.String" value="Laporan"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+            <MenuItem class="javax.swing.JMenuItem" name="menuLaporan">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Penerimaan"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuLaporanActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu4">
+        <Menu class="javax.swing.JMenu" name="menuDevice">
           <Properties>
             <Property name="text" type="java.lang.String" value="Setting"/>
           </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Device"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem2ActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
         </Menu>
       </SubComponents>
     </Menu>
@@ -180,8 +192,12 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="lbl_operator" min="-2" pref="166" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jSeparator1" min="-2" pref="28" max="-2" attributes="0"/>
-                      <EmptySpace pref="486" max="32767" attributes="0"/>
+                      <Component id="jSeparator1" min="-2" pref="14" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lbl_device" min="-2" pref="138" max="-2" attributes="0"/>
+                      <EmptySpace pref="279" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -190,6 +206,8 @@
                   <Component id="jSeparator1" max="32767" attributes="0"/>
                   <Component id="jLabel1" pref="26" max="32767" attributes="0"/>
                   <Component id="lbl_operator" alignment="0" max="32767" attributes="0"/>
+                  <Component id="lbl_device" alignment="1" max="32767" attributes="0"/>
+                  <Component id="jLabel2" alignment="1" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -207,6 +225,16 @@
             <Component class="javax.swing.JLabel" name="lbl_operator">
               <Properties>
                 <Property name="text" type="java.lang.String" value="-"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel2">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Device Status :"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lbl_device">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Not Connected..."/>
               </Properties>
             </Component>
           </SubComponents>

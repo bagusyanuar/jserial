@@ -4,12 +4,17 @@
  */
 package com.johnny.view;
 
+import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
 import com.johnny.dialog.Login;
 import com.johnny.util.SingleDisplayInterface;
+import com.johnny.view.master.DeviceFrame;
 import com.johnny.view.master.ReceiptFrame;
 import com.johnny.view.master.ReceiptReport;
 import com.johnny.view.master.SupplierFrame;
 import com.johnny.view.master.UserFrame;
+import java.io.InputStream;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
@@ -28,10 +33,12 @@ public class MainFrame extends javax.swing.JFrame {
     SupplierFrame supplierFrame;
     ReceiptFrame receiptFrame;
     ReceiptReport receiptReport;
+    DeviceFrame deviceFrame;
     SingleDisplayInterface sdi = new SingleDisplayInterface();
     String operator;
     long operatorId;
     SessionFactory sf;
+    SerialPort port;
 
     public MainFrame() {
         initComponents();
@@ -61,6 +68,14 @@ public class MainFrame extends javax.swing.JFrame {
         this.sf = sf;
     }
 
+    public SerialPort getPort() {
+        return port;
+    }
+
+    public void setPort(SerialPort port) {
+        this.port = port;
+    }
+
     public boolean prepareComponent(SessionFactory factory) {
         boolean result = false;
         try {
@@ -69,13 +84,15 @@ public class MainFrame extends javax.swing.JFrame {
             supplierFrame = new SupplierFrame();
             receiptFrame = new ReceiptFrame();
             receiptReport = new ReceiptReport();
+            deviceFrame = new DeviceFrame();
             userFrame.setFactory(factory);
             supplierFrame.setFactory(factory);
             receiptFrame.setFactory(factory);
             receiptReport.setFactory(factory);
             receiptFrame.setMf(this);
             receiptReport.setMf(this);
-            JInternalFrame[] iframe = {userFrame, supplierFrame, receiptFrame, receiptReport};
+            deviceFrame.setMf(this);
+            JInternalFrame[] iframe = {userFrame, supplierFrame, receiptFrame, receiptReport, deviceFrame};
             sdi.prepareComponent(iframe, dPane);
             result = true;
         } catch (Exception e) {
@@ -101,6 +118,8 @@ public class MainFrame extends javax.swing.JFrame {
     private void setAccessMenu(String role) {
         menuLogin.setEnabled(false);
         menuLogout.setEnabled(true);
+        menuLaporan.setEnabled(true);
+        menuDevice.setEnabled(true);
         switch (role) {
             case "super":
                 menuUser.setEnabled(true);
@@ -123,6 +142,8 @@ public class MainFrame extends javax.swing.JFrame {
         menuUser.setEnabled(false);
         menuReceipt.setEnabled(false);
         menuSupplier.setEnabled(false);
+        menuLaporan.setEnabled(false);
+        menuDevice.setEnabled(false);
     }
 
     /**
@@ -139,6 +160,8 @@ public class MainFrame extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         lbl_operator = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        lbl_device = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuLogin = new javax.swing.JMenuItem();
@@ -151,8 +174,9 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         menuReceipt = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
+        menuLaporan = new javax.swing.JMenuItem();
+        menuDevice = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -171,6 +195,10 @@ public class MainFrame extends javax.swing.JFrame {
 
         lbl_operator.setText("-");
 
+        jLabel2.setText("Device Status :");
+
+        lbl_device.setText("Not Connected...");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -181,14 +209,20 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbl_operator, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(486, Short.MAX_VALUE))
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_device, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(279, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
             .addComponent(lbl_operator, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lbl_device, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         dPane.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -278,18 +312,29 @@ public class MainFrame extends javax.swing.JFrame {
 
         jMenu5.setText("Laporan");
 
-        jMenuItem1.setText("Penerimaan");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        menuLaporan.setText("Penerimaan");
+        menuLaporan.setEnabled(false);
+        menuLaporan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                menuLaporanActionPerformed(evt);
             }
         });
-        jMenu5.add(jMenuItem1);
+        jMenu5.add(menuLaporan);
 
         jMenuBar1.add(jMenu5);
 
-        jMenu4.setText("Setting");
-        jMenuBar1.add(jMenu4);
+        menuDevice.setText("Setting");
+
+        jMenuItem2.setText("Device");
+        jMenuItem2.setEnabled(false);
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        menuDevice.add(jMenuItem2);
+
+        jMenuBar1.add(menuDevice);
 
         setJMenuBar(jMenuBar1);
 
@@ -319,9 +364,48 @@ public class MainFrame extends javax.swing.JFrame {
         sdi.showCompt(userFrame, dPane);
     }//GEN-LAST:event_menuUserActionPerformed
 
+    private void openCom() {
+        try {
+            SerialPort[] list = SerialPort.getCommPorts();
+            deviceFrame.setCombo(list);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error Port ");
+        }
+    }
+    
+    public void setDeviceLabel(String text) {
+        lbl_device.setText(text);
+    }
+
+    public void setCommListener() {
+        try {
+            InputStream in = port.getInputStream();
+            port.addDataListener(new SerialPortDataListener() {
+                @Override
+                public int getListeningEvents() {
+                    return SerialPort.LISTENING_EVENT_DATA_RECEIVED; //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public void serialEvent(SerialPortEvent event) {
+                    if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_RECEIVED) {
+                        byte[] data = event.getReceivedData();
+                        String msg = new String(data);
+                        receiptFrame.setLabelQty(msg);
+                        System.out.println(msg);
+                    } //To change body of generated methods, choose Tools | Templates.
+                }
+
+            });
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error Create Listener");
+        }
+    }
+
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
 //        menuUser.setEnabled(true);
+        openCom();
     }//GEN-LAST:event_formWindowOpened
 
     private void menuSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSupplierActionPerformed
@@ -358,12 +442,19 @@ public class MainFrame extends javax.swing.JFrame {
         postLogout();
     }//GEN-LAST:event_menuLogoutActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void menuLaporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLaporanActionPerformed
         // TODO add your handling code here:
         sdi.setMaximizeView(false);
         sdi.setCenterLocation(receiptReport, dPane);
         sdi.showCompt(receiptReport, dPane);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_menuLaporanActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        sdi.setMaximizeView(false);
+        sdi.setCenterLocation(deviceFrame, dPane);
+        sdi.showCompt(deviceFrame, dPane);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -403,18 +494,21 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane dPane;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JLabel lbl_device;
     private javax.swing.JLabel lbl_operator;
+    private javax.swing.JMenu menuDevice;
+    private javax.swing.JMenuItem menuLaporan;
     private javax.swing.JMenuItem menuLogin;
     private javax.swing.JMenuItem menuLogout;
     private javax.swing.JMenuItem menuReceipt;
