@@ -96,18 +96,18 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="menuDevice">
+        <Menu class="javax.swing.JMenu" name="menuDevice1">
           <Properties>
             <Property name="text" type="java.lang.String" value="Setting"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
+            <MenuItem class="javax.swing.JMenuItem" name="menuDevice">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Device"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem2ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuDeviceActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

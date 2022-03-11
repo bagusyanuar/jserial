@@ -175,8 +175,8 @@ public class MainFrame extends javax.swing.JFrame {
         menuReceipt = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         menuLaporan = new javax.swing.JMenuItem();
-        menuDevice = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        menuDevice1 = new javax.swing.JMenu();
+        menuDevice = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -323,18 +323,18 @@ public class MainFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu5);
 
-        menuDevice.setText("Setting");
+        menuDevice1.setText("Setting");
 
-        jMenuItem2.setText("Device");
-        jMenuItem2.setEnabled(false);
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        menuDevice.setText("Device");
+        menuDevice.setEnabled(false);
+        menuDevice.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                menuDeviceActionPerformed(evt);
             }
         });
-        menuDevice.add(jMenuItem2);
+        menuDevice1.add(menuDevice);
 
-        jMenuBar1.add(menuDevice);
+        jMenuBar1.add(menuDevice1);
 
         setJMenuBar(jMenuBar1);
 
@@ -379,7 +379,6 @@ public class MainFrame extends javax.swing.JFrame {
 
     public void setCommListener() {
         try {
-            InputStream in = port.getInputStream();
             port.addDataListener(new SerialPortDataListener() {
                 @Override
                 public int getListeningEvents() {
@@ -392,7 +391,7 @@ public class MainFrame extends javax.swing.JFrame {
                         byte[] data = event.getReceivedData();
                         String msg = new String(data);
                         int qty = 0;
-                        if (!"".equals(msg)) {
+                        if (!"".equals(msg) || msg.matches("^[0-9]+$")) {
                             qty = Integer.parseInt(msg);
                         }
                         receiptFrame.setLabelQty(msg);
@@ -454,12 +453,12 @@ public class MainFrame extends javax.swing.JFrame {
         sdi.showCompt(receiptReport, dPane);
     }//GEN-LAST:event_menuLaporanActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void menuDeviceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDeviceActionPerformed
         // TODO add your handling code here:
         sdi.setMaximizeView(false);
         sdi.setCenterLocation(deviceFrame, dPane);
         sdi.showCompt(deviceFrame, dPane);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    }//GEN-LAST:event_menuDeviceActionPerformed
 
     /**
      * @param args the command line arguments
@@ -505,14 +504,14 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JLabel lbl_device;
     private javax.swing.JLabel lbl_operator;
-    private javax.swing.JMenu menuDevice;
+    private javax.swing.JMenuItem menuDevice;
+    private javax.swing.JMenu menuDevice1;
     private javax.swing.JMenuItem menuLaporan;
     private javax.swing.JMenuItem menuLogin;
     private javax.swing.JMenuItem menuLogout;

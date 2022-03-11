@@ -42,10 +42,10 @@ public class DeviceFrame extends javax.swing.JInternalFrame {
 
     private void connect() {
         String port = combo_port.getSelectedItem().toString();
-        if (!mf.getPort().isOpen()) {
+        System.out.println(port);
             try {
                 mf.setPort(SerialPort.getCommPort(port));
-                mf.getPort().setComPortParameters(9600, 8, 1, 0, false);
+                mf.getPort().setComPortParameters(115200, 8, 1, 0);
                 mf.getPort().openPort();
                 mf.setCommListener();
                 setStatus(true);
@@ -55,9 +55,6 @@ public class DeviceFrame extends javax.swing.JInternalFrame {
             } catch (SerialPortInvalidPortException e) {
                 JOptionPane.showMessageDialog(null, "Error Open");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Please Has Been Opened");
-        }
 
     }
 
@@ -72,7 +69,6 @@ public class DeviceFrame extends javax.swing.JInternalFrame {
     }
 
     private void disconnect() {
-        if (mf.getPort().isOpen()) {
             try {
                 mf.getPort().closePort();
                 setStatus(false);
@@ -81,10 +77,6 @@ public class DeviceFrame extends javax.swing.JInternalFrame {
             } catch (HeadlessException e) {
                 JOptionPane.showMessageDialog(null, "Error Close Port");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Please Open Port");
-        }
-
     }
 
     private void OnConnect() {
@@ -146,6 +138,11 @@ public class DeviceFrame extends javax.swing.JInternalFrame {
 
         btn_disconnect.setText("Disconnect");
         btn_disconnect.setEnabled(false);
+        btn_disconnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_disconnectActionPerformed(evt);
+            }
+        });
 
         btn_refresh.setText("Refresh");
         btn_refresh.addActionListener(new java.awt.event.ActionListener() {
@@ -210,6 +207,11 @@ public class DeviceFrame extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         refreshPort();
     }//GEN-LAST:event_btn_refreshActionPerformed
+
+    private void btn_disconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_disconnectActionPerformed
+        // TODO add your handling code here:
+        disconnect();
+    }//GEN-LAST:event_btn_disconnectActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

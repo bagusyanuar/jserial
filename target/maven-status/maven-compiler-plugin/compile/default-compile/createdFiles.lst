@@ -37,6 +37,7 @@ com\johnny\view\MainFrame$10.class
 com\johnny\view\master\ReceiptReport$1.class
 com\johnny\dialog\Login$3.class
 com\johnny\view\MainFrame$6.class
+com\johnny\view\master\DeviceFrame$3.class
 com\johnny\dialog\Supplier$3.class
 com\johnny\view\MainFrame$8.class
 com\johnny\dialog\ResetPassword$1.class
