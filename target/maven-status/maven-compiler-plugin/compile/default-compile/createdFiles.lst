@@ -16,6 +16,7 @@ com\johnny\view\master\ReceiptReport$7.class
 com\johnny\view\master\DeviceFrame$2.class
 com\johnny\dialog\Login$4$1.class
 com\johnny\dialog\ResetPassword$2.class
+com\johnny\view\master\UserFrame$9.class
 com\johnny\view\master\UserFrame.class
 com\johnny\repository\SupplierRepository.class
 com\johnny\view\master\ReceiptFrame$6.class
@@ -27,6 +28,8 @@ com\johnny\dialog\ResetPassword$2$1.class
 com\johnny\dialog\Supplier$2.class
 com\johnny\dialog\Login.class
 com\johnny\view\MainFrame$9.class
+com\johnny\view\master\ReceiptFrame$8.class
+com\johnny\view\master\UserFrame$8.class
 com\johnny\view\master\SupplierFrame$1.class
 com\johnny\view\master\UserFrame$2.class
 com\johnny\repository\UserRepository.class
@@ -66,6 +69,7 @@ com\johnny\view\master\SupplierFrame$2.class
 com\johnny\entity\Receipt.class
 com\johnny\view\MainFrame$4.class
 com\johnny\view\master\SupplierFrame.class
+com\johnny\view\master\UserFrame$7.class
 com\johnny\view\master\UserFrame$3.class
 com\johnny\view\master\DeviceFrame$1.class
 com\johnny\util\SingleDisplayInterface.class
@@ -74,3 +78,4 @@ com\johnny\view\master\SupplierFrame$6.class
 com\johnny\dialog\Supplier.class
 com\johnny\view\master\DeviceFrame.class
 com\johnny\dialog\Supplier$4.class
+com\johnny\view\master\UserFrame$10.class

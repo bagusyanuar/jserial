@@ -7,6 +7,7 @@ package com.johnny.view.master;
 import com.johnny.entity.Receipt;
 import com.johnny.entity.Supplier;
 import com.johnny.entity.User;
+import com.johnny.repository.ReceiptFactory;
 import com.johnny.repository.SupplierRepository;
 import com.johnny.repository.UserRepository;
 import com.johnny.view.MainFrame;
@@ -78,8 +79,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
     public void setLabelQty(String qty) {
         lbl_qty.setText(qty);
     }
-    
-    
+
     private void setTabelProperties() {
         model = new DefaultTableModel() {
             @Override
@@ -113,7 +113,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
     public void setFactory(SessionFactory factory) {
         this.factory = factory;
     }
-    
+
     int qtyDevice = 0;
 
     public int getQtyDevice() {
@@ -123,8 +123,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
     public void setQtyDevice(int qtyDevice) {
         this.qtyDevice = qtyDevice;
     }
-    
-    
+
     private void create() {
         Session session = factory.openSession();
         try {
@@ -203,7 +202,8 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
                 || "".equals(txt_supplier_name.getText())
                 || "".equals(txt_driver_name.getText())
                 || "".equals(txt_vehicle.getText())
-                || getQtyDevice() <= 0) {
+//                || getQtyDevice() <= 0
+                ) {
             result = false;
         }
         return result;
@@ -263,6 +263,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
 
         pop = new javax.swing.JPopupMenu();
         popCetak = new javax.swing.JMenuItem();
+        popDelete = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txt_supplier_name = new javax.swing.JTextField();
@@ -287,6 +288,14 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
             }
         });
         pop.add(popCetak);
+
+        popDelete.setText("Hapus");
+        popDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                popDeleteActionPerformed(evt);
+            }
+        });
+        pop.add(popDelete);
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -467,7 +476,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         // TODO add your handling code here:
-        
+
         Session ses = factory.openSession();
         getData(ses);
         ses.close();
@@ -501,11 +510,40 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
 
     private void popCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popCetakActionPerformed
         // TODO add your handling code here:
-            int row = tb_data.getSelectedRow();
-            String id = tb_data.getModel().getValueAt(row, 7).toString();
-            
-            cetak(id);
+        int row = tb_data.getSelectedRow();
+        String id = tb_data.getModel().getValueAt(row, 7).toString();
+        cetak(id);
     }//GEN-LAST:event_popCetakActionPerformed
+
+    private void delete(long id) {
+        Session ses = factory.openSession();
+        try {
+            ses.getTransaction().begin();
+            Receipt receipt = ReceiptFactory.findById(ses, id);
+            if (receipt != null) {
+                ses.delete(receipt);
+                JOptionPane.showMessageDialog(null, "Success Delete");
+                getData(ses);
+                ses.getTransaction().commit();
+            } else {
+                JOptionPane.showMessageDialog(null, "Transaction not found!");
+            }
+        } catch (HeadlessException e) {
+            ses.getTransaction().rollback();
+            JOptionPane.showMessageDialog(null, "Failed To Set Non Aktif User");
+        } finally {
+            ses.close();
+        }
+    }
+    private void popDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popDeleteActionPerformed
+        // TODO add your handling code here:
+        int row = tb_data.getSelectedRow();
+        long id = Long.parseLong(tb_data.getModel().getValueAt(row, 7).toString());
+        int dResult = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin menghapus transaksi?");
+        if (dResult == JOptionPane.YES_OPTION) {
+            delete(id);
+        }
+    }//GEN-LAST:event_popDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -521,6 +559,7 @@ public class ReceiptFrame extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbl_qty;
     private javax.swing.JPopupMenu pop;
     private javax.swing.JMenuItem popCetak;
+    private javax.swing.JMenuItem popDelete;
     private javax.swing.JTable tb_data;
     private javax.swing.JTextField txt_driver_name;
     private javax.swing.JButton txt_save;

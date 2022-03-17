@@ -39,6 +39,7 @@ public class MainFrame extends javax.swing.JFrame {
     long operatorId;
     SessionFactory sf;
     SerialPort port;
+    static String combine = "";
 
     public MainFrame() {
         initComponents();
@@ -134,6 +135,7 @@ public class MainFrame extends javax.swing.JFrame {
             default:
                 break;
         }
+        userFrame.setRole(role);
     }
 
     private void setAccessLogout() {
@@ -372,14 +374,16 @@ public class MainFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error Port ");
         }
     }
-    
+
     public void setDeviceLabel(String text) {
         lbl_device.setText(text);
     }
 
     public void setCommListener() {
         try {
+
             port.addDataListener(new SerialPortDataListener() {
+
                 @Override
                 public int getListeningEvents() {
                     return SerialPort.LISTENING_EVENT_DATA_RECEIVED; //To change body of generated methods, choose Tools | Templates.
@@ -388,15 +392,36 @@ public class MainFrame extends javax.swing.JFrame {
                 @Override
                 public void serialEvent(SerialPortEvent event) {
                     if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_RECEIVED) {
-                        byte[] data = event.getReceivedData();
-                        String msg = new String(data);
-                        int qty = 0;
-                        if (!"".equals(msg) || msg.matches("^[0-9]+$")) {
-                            qty = Integer.parseInt(msg);
+//                        String combine = "";
+                        byte[] temp = event.getReceivedData();
+                        String message = new String(temp);
+                        boolean gotCorrectData = false;
+                        if (message.contains("\n")) {
+                            if (combine.equalsIgnoreCase("")) {
+                                message = message.trim();
+                                combine = message;
+                                gotCorrectData = true;
+                            } else {
+                                combine += message;
+                                combine = combine.trim();
+                                gotCorrectData = true;
+                            }
+                        } else {
+                            combine += message;
                         }
-                        receiptFrame.setLabelQty(msg);
-                        receiptFrame.setQtyDevice(qty);
-                        System.out.println(msg);
+
+                        if (gotCorrectData) {
+                            int qty = 0;
+                            String res = combine;
+                            if ("".equals(combine)) {
+                            } else {
+                                qty = Integer.parseInt(combine);
+                            }
+                            receiptFrame.setLabelQty(res);
+                            receiptFrame.setQtyDevice(qty);
+                            System.out.println(qty);
+                            combine = "";
+                        }
                     } //To change body of generated methods, choose Tools | Templates.
                 }
 

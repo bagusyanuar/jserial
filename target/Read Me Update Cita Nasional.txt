@@ -1,0 +1,11 @@
+1. Buka MySQLServer Command Line
+
+2. Masukan Password : Matius6ayat13
+
+3. Ketikan Perintah : USE jserial;
+
+4. Ketikan Perintah : ALTER TABLE `users` ADD `is_active` BOOLEAN NOT NULL DEFAULT TRUE AFTER `role`;
+
+5. Copy Replace kan file .jar yang baru ke folder target yang lama.
+
+6. Copy Replace Folder src ke folder target yang lama

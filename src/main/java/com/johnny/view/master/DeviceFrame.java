@@ -45,7 +45,7 @@ public class DeviceFrame extends javax.swing.JInternalFrame {
         System.out.println(port);
             try {
                 mf.setPort(SerialPort.getCommPort(port));
-                mf.getPort().setComPortParameters(9600, 8, 1, 0);
+                mf.getPort().setBaudRate(9600);
                 mf.getPort().openPort();
                 mf.setCommListener();
                 setStatus(true);

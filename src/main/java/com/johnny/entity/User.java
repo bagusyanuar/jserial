@@ -36,6 +36,9 @@ public class User implements Serializable {
     @Column(name = "role")
     private String role;
 
+    @Column(name = "is_active")
+    private boolean isActive;
+    
     @Column(name = "created_at")
     private Date createdAt;
 
@@ -74,7 +77,15 @@ public class User implements Serializable {
         this.role = role;
     }
 
-    
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+
     public Date getCreatedAt() {
         return createdAt;
     }

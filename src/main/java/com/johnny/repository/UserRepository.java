@@ -27,7 +27,7 @@ public class UserRepository {
     public static User findByUsername(Session session, String username) {
         User user = null;
         try {
-            user = (User) session.createQuery("FROM User WHERE username = '" + username + "'")
+            user = (User) session.createQuery("FROM User WHERE username = '" + username + "' AND is_active = 1")
                     .getResultList()
                     .stream()
                     .findFirst()

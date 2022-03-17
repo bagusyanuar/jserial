@@ -153,7 +153,7 @@
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Penerima]]></text>
+				<text><![CDATA[ttd]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="0" y="29" width="60" height="15" uuid="5d9cb362-6d16-49ba-b74e-d0da8ba6c1f9"/>
@@ -162,13 +162,13 @@
 				</textElement>
 				<textFieldExpression><![CDATA[( $P{operator} )]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="153" y="30" width="76" height="15" uuid="0ce75950-285e-46ed-8b7c-a072ee73a596"/>
+			<textField>
+				<reportElement x="153" y="29" width="76" height="15" uuid="98acc9a1-a402-4d1a-9887-29e5bfb25fed"/>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[(.....................)]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[( $F{driver} )]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 </jasperReport>

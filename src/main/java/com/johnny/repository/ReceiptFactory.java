@@ -4,6 +4,9 @@
  */
 package com.johnny.repository;
 
+import com.johnny.entity.Receipt;
+import com.johnny.entity.User;
+import javax.swing.JOptionPane;
 import org.hibernate.Session;
 
 /**
@@ -12,8 +15,13 @@ import org.hibernate.Session;
  */
 public class ReceiptFactory {
     
-    public void create(Session session) {
-        
-        
-    } 
+    public static Receipt findById(Session session, long id) {
+        Receipt receipt = null;
+        try {
+            receipt = (Receipt) session.get(Receipt.class, id);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        return receipt;
+    }    
 }
